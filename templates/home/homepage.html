@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <h1>About This Site</h1>
+    <p>Welcome to the Stop Podasting Yourself episode database.  Here you can find in-line players for all of the episodes, plus episodes sorted by date
+    and guest appearances.</p>
+    <br />
+
+    {% include "/episodes/episodeDetails.html" %}
+    <div class="episode">
+        <div class="episode-inner">
+            <div class="info">
+                <a href="/episodes_index.html" class="episodes-list" title="View All Episodes">View Episodes List</a>
+                <a href="/guests_index.html" class="guests-list" title="View Guest Appearances">View Guest Appearances</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

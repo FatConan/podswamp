@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Episodes{% endblock %}
+{% block content %}
+    <div class="episode">
+        <div class="episode-inner">
+            <p class="published">Stop Podcasting Yourself Episode List</p>
+            <div class="info">
+                <table class="guests-and-episodes">
+                    <thead><tr><th>No.</th><th>Title</th><th>Released</th></tr></thead>
+                    <tbody>
+                        {% for episode in episodes %}
+                            <tr><td>#{{ episode.position }}</td>
+                                <td><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">{{ episode.title }}</a></td>
+                                <td>{{ episode.published.strftime("%B %d, %Y") }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

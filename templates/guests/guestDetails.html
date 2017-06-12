@@ -1,0 +1,86 @@
+<div class="guest">
+    <h1>{{ guest.name }}</h1>
+    <div class="guest-inner">
+        {% if guest.displayAliases %}
+            <p class="published">a.k.a. {% for alias in guest.displayAliases %}{{ alias }} {% endfor %}</p>
+        {% endif %}
+        <div class="info">
+            <ul class="episodes">
+                {% for episode in guest.sortedEpisodes %}
+                     <li><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">(#{{ episode.position }}) {{ episode.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <span style="display:none" id="attendance">{{ attendance }}</span>
+        <script type="text/javascript">
+            var data = $.parseJSON($('#attendance').text());
+            AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "pathToImages": "resources/javascript/amcharts/images/",
+                "categoryField": "date",
+                //"startDuration": 1,
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "parseDates": true
+                },
+                "trendLines": [],
+                "graphs": [
+                    /*{
+                        "balloonText": "[[title]] of [[category]]:[[value]]",
+                        "bullet": "none",
+                        "type":"column",
+                        "id": "attendances",
+                        "lineThickness": 5,
+                        "title": "Attendance",
+                        "valueField": "present"
+                    },*/
+                    {
+                        "balloonText": "[[title]] of [[category]]:[[value]]",
+                        "bullet": "none",
+                        "id": "mean_attendance",
+                        "title": "Mean Attendance",
+                        "valueField": "mean_attendance",
+                        "valueAxis":"meanAttendance"
+                    },
+                    {
+                        "balloonText": "[[title]] of [[category]]:[[value]]",
+                        "bullet": "none",
+                        "type": "smoothedLine",
+                        "lineThickness": 2,
+                        "id": "running_mean",
+                        "title": "Running Mean",
+                        "valueField": "running_mean",
+                        "valueAxis":"meanAttendance"
+                    }
+                ],
+                "guides": [],
+                "valueAxes": [
+                    {
+                        "title": "Episode Attendance (%)",
+                        "logarithmic": false,
+                        "position": "left",
+                        "id":"dailyAttendance"
+                    },
+                    {
+                        "title": "Mean Attendance (%)",
+                        "logarithmic": false,
+                        "position": "right",
+                        "id":"meanAttendance"
+                    }
+                ],
+                "allLabels": [],
+                "balloon": {},
+                "titles": [
+                    {
+                        "size": 15,
+                        "text": "Appearances Visualisation"
+                    }
+                ],
+                "dataProvider": data
+            }
+        );
+        </script>
+		<div id="chartdiv" style="width: 100%; height: 400px; background-color: #FFFFFF;" ></div>
+    </div>
+</div>
