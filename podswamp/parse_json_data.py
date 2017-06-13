@@ -1,7 +1,7 @@
 import json
 import re
 import pickle
-from spy_entities import *
+from podswamp.entities import *
 
 class GuestProcessingAndKeywordExtraction:
     #The standard episode titles are in the format Episode XXXX - <Guest Name>
@@ -60,7 +60,7 @@ class GuestProcessingAndKeywordExtraction:
         self.episodes[episodeData.get('episode_id')] = Episode(episodeData)
 
     def processEpisodes(self):
-        with open("data/base.json", "rb") as json_file:
+        with open("data/base.json", "r") as json_file:
             for episodeData in json.load(json_file):
                 self.addNewEpisode(episodeData)
 

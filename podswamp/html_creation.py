@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from datetime import date
 import json
 import os
 import pickle
-from helpers.progress import Progress
-from spy_entities import *
 import shutil
+from datetime import date
+
 from jinja2 import Environment, PackageLoader
 
+from podswamp.helpers.progress import Progress
+from podswamp.entities import *
 
 class HTMLGenerator:
     version = date.today().strftime("%Y.%m.%d")
     env = Environment(loader=PackageLoader(__name__, 'templates'))
 
     html_folder_base = "./html/"
-    resources_folder = "resources"
+    resources_folder = "podswamp/resources"
     basic_html_template = 'base.html'
     episode_template = 'episodes/episode.html'
     episodes_template = 'episodes/index.html'

@@ -25,7 +25,7 @@ class Guest:
             self.noGuest = False
 
         self.episodes = []
-        self.id = hashlib.sha224(self.name).hexdigest()
+        self.id = hashlib.sha224(self.name.encode("utf8")).hexdigest()
 
         if aliases is None:
             self.aliases = []
@@ -46,8 +46,11 @@ class Guest:
 
     @property
     def timeSinceLastAppearance(self):
-        last_episode = self.sortedEpisodes[0]
-        distance = datetime.now(utc) - last_episode.published
+        try:
+            last_episode = self.sortedEpisodes[0]
+            distance = datetime.now(utc) - last_episode.published
+        except IndexError:
+            distance = 0
         return distance
 
     @property

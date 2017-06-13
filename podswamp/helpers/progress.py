@@ -39,17 +39,17 @@ class Progress:
 if __name__ == '__main__':
     p = Progress()
 
-    print "\nSpinner"
+    print("\nSpinner")
     for i in range(0, 200):
         p.spinner()
         time.sleep(0.01)
 
-    print "\nBasic Progress"
+    print("\nBasic Progress")
     for i in range(0, 100):
         p.percentage(i)
         time.sleep(0.01)
 
-    print "\nProgress Bar"
+    print("\nProgress Bar")
     for i in range(0, 100):
         p.progress_bar(100, i)
         time.sleep(0.01)

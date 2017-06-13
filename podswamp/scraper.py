@@ -5,14 +5,23 @@ import os
 import requests
 import json
 from xml.dom.minidom import parseString
-from spy_entities import *
+from podswamp.entities import *
 from html.parser import HTMLParser
 
 class MLStripper(HTMLParser):
-    def __init__(self):
+    def __init__(self, strip=False):
         HTMLParser.__init__(self)
         self.reset()
+        self.strip = strip
         self.fed = []
+
+    def handle_starttag(self, tag, attrs):
+        if not self.strip:
+            self.fed.append("<%s>" % tag)
+
+    def handle_endtag(self, tag):
+        if not self.strip:
+            self.fed.append("</%s>" % tag)
 
     def handle_data(self, d):
         self.fed.append(d)
@@ -21,13 +30,16 @@ class MLStripper(HTMLParser):
         return ''.join(self.fed)
 
 def strip_tags(html):
+    s = MLStripper(strip=True)
+    s.feed(html)
+    return s.get_data()
+
+def clean_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
 
 class FeedParser:
-    #libsyn_feed = "http://stoppodcastingyourself.libsyn.com/rss"
-
     def __init__(self, libsyn_feed):
         self.libsyn_feed = libsyn_feed
         self.data = []
@@ -85,7 +97,8 @@ class FeedParser:
                     'title':  title,
                     'published': published,
                     'link':  self.getElementText(item.getElementsByTagName("link")),
-                    'description': strip_tags(self.getElementText(item.getElementsByTagName("description"))),
+                    'stripped_description': strip_tags(self.getElementText(item.getElementsByTagName("description"))),
+                    'description': clean_tags(self.getElementText(item.getElementsByTagName("description"))),
                     'media_url': item.getElementsByTagName("enclosure")[0].attributes["url"].value,
                     'media_length': item.getElementsByTagName("enclosure")[0].attributes["length"].value,
                     'media_type': item.getElementsByTagName("enclosure")[0].attributes["type"].value,
