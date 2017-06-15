@@ -14,10 +14,9 @@ from podswamp.entities import *
 
 class HTMLGenerator:
     version = date.today().strftime("%Y.%m.%d")
-    env = Environment(loader=PackageLoader(__name__, 'templates'))
 
     html_folder_base = "./html/"
-    resources_folder = "podswamp/resources"
+    resources_folder = "resources/"
     basic_html_template = 'base.html'
     episode_template = 'episodes/episode.html'
     episodes_template = 'episodes/index.html'
@@ -27,7 +26,9 @@ class HTMLGenerator:
     css_template = 'css/style.css'
     progress = Progress()
 
-    def __init__(self):
+    def __init__(self, config):
+        print("TEMPLATES", config.get_template_folder())
+        self.env = Environment(loader=PackageLoader(__name__, config.get_template_folder()))
         self.output_folder = os.path.join(self.html_folder_base, self.version)
 
         with open('data/guests.json', 'rb') as quest_json:
