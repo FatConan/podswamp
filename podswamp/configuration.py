@@ -3,8 +3,6 @@ import json
 
 
 class Config:
-
-
     def __init__(self, project_root, podswamp_location):
         self.project_root = project_root
         self.podswamp_location = podswamp_location
@@ -15,3 +13,6 @@ class Config:
 
     def get_template_folder(self):
         return self.config.get("template_folder", os.path.join(self.podswamp_location, 'templates'))
+
+    def get_resources_folder(self):
+        return self.config.get("resources_folder", os.path.join(self.podswamp_location, 'resources'))

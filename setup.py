@@ -34,7 +34,7 @@ setup(name='podswamp',
       # Author's details
       author='Fat Conan',
       author_email='ian@headwillcollapse.net',
-
+      include_package_data=True,
       license='MIT',
 
       # https://pypi.python.org/pypi?%3Aaction=list_classifiers

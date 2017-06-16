@@ -2,8 +2,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
     <h1>About This Site</h1>
-    <p>Welcome to the Stop Podasting Yourself episode database.  Here you can find in-line players for all of the episodes, plus episodes sorted by date
-    and guest appearances.</p>
+    <p>{{ podswamp_intro }}</p>
     <br />
 
     {% include "/episodes/episodeDetails.html" %}

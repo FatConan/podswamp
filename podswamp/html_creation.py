@@ -7,7 +7,7 @@ import pickle
 import shutil
 from datetime import date
 
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 
 from podswamp.helpers.progress import Progress
 from podswamp.entities import *
@@ -16,7 +16,6 @@ class HTMLGenerator:
     version = date.today().strftime("%Y.%m.%d")
 
     html_folder_base = "./html/"
-    resources_folder = "resources/"
     basic_html_template = 'base.html'
     episode_template = 'episodes/episode.html'
     episodes_template = 'episodes/index.html'
@@ -28,7 +27,9 @@ class HTMLGenerator:
 
     def __init__(self, config):
         print("TEMPLATES", config.get_template_folder())
-        self.env = Environment(loader=PackageLoader(__name__, config.get_template_folder()))
+        self.env = Environment(loader=FileSystemLoader(config.get_template_folder()))
+        self.resources_folder = config.get_resources_folder()
+
         self.output_folder = os.path.join(self.html_folder_base, self.version)
 
         with open('data/guests.json', 'rb') as quest_json:
@@ -95,7 +96,7 @@ class HTMLGenerator:
 
     def clear_and_copy_resources(self):
         self.progress.pprint("Copying Resources")
-        html_resources = os.path.join(self.output_folder, self.resources_folder)
+        html_resources = os.path.join(self.output_folder, "resources")
         if os.path.exists(html_resources):
             shutil.rmtree(html_resources)
         shutil.copytree(self.resources_folder, html_resources)

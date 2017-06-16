@@ -1,6 +1,6 @@
 <div class="episode">
     <div class="episode-inner">
-        <p class="published">Stop Podcasting Yourself, With Guest Appearances From: </p>
+        <p class="published">{{ podcast_title }} With Guest Appearances From: </p>
         <div class="info">
             <table class="guests-and-episodes">
                 <thead><tr><th>Name</th><th>Episodes</th><th class="time-since">Not Seen In</th></tr></thead>
@@ -15,117 +15,10 @@
                                     <a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">#{{ episode.position }}</a>
                                 {% endfor %}
                             </td>
-                            <td class="time-since" title="{{ appearance.formattedTimeSinceLastAppearance }}">
-                                <span data-time="{{ appearance.timeSinceLastAppearance.days }}" title="{{ appearance.formattedTimeSinceLastAppearance }}">&nbsp;</span>
-                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <script type="text/javascript">
-                var max = 0;
-
-                $('td.time-since span').each(function(i,e){
-                    var el = $(e);
-                    var time = parseInt(el.attr('data-time'), 10);
-                    if(time > max) max = time;
-                });
-
-                var progressIndicator = ({
-                    radius: 100,
-                    arcWidth: 20,
-                    canvas: null,
-                    svg: null,
-
-                    create: function(){
-                        return this;
-                    },
-
-                    resetCanvas: function(canvas){
-                       this.canvas = d3.select(canvas);
-                       this.canvas.html("");
-                       this.svg = this.canvas.append("svg")
-                            .attr("width", this.radius * 6)
-                            .attr("height", this.radius * 2)
-                            .append("g")
-                            .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
-                    },
-
-                    bandColor: function(startColour, endColour, weight){
-                        var p = weight;
-                        var h1 = parseInt('0x' + startColour, 16);
-                        var h2 = parseInt('0x' + endColour, 16);
-
-                        var r = h2 >> 16;
-                        var g = h2 >> 8 & 0xFF;
-                        var b = h2 & 0xFF;
-
-                        r = r + ((h1 >> 16) - r) * p;
-                        g = g + ((h1 >> 8 & 0xFF) - g) * p;
-                        b = b + ((h1 & 0xFF) - b) * p;
-
-                        return [Math.ceil(r), Math.ceil(g), Math.ceil(b)];
-                    },
-
-                    draw: function(startColor, endColor, value, maxValue){
-                        var weight = (value/maxValue);
-                        var percentage = 100 * weight;
-
-                        var radsPerPercent = (Math.PI * 2)/100;
-                        var backgroundColor = "rgba(120,84,177,0.5)";
-                        var arcColorParts = this.bandColor(startColor, endColor, weight);
-                        var arcColor = 'rgba(' + arcColorParts[0] + ',' + arcColorParts[1] + ',' + arcColorParts[2] + ',0.5)';
-                        arcColor = "rgba(0, 182, 161, 1)";
-                        //Draw the background arc
-                        var outerArc = d3.svg.arc()
-                            .innerRadius(this.radius)
-                            .outerRadius(this.radius - this.arcWidth)
-                            .startAngle(0)
-                            .endAngle(2 * Math.PI);
-
-                        this.svg.append("path")
-                            .attr("fill", backgroundColor)
-                            .attr("d", outerArc);
-
-                        //Draw the foreground arc (showing the percentage complete)
-                        var arc = d3.svg.arc()
-                            .innerRadius(this.radius)
-                            .outerRadius(this.radius - this.arcWidth)
-                            .startAngle(0)
-                            .endAngle(radsPerPercent * percentage.toFixed(0));
-
-                        this.svg.append("path")
-                            .attr("fill", arcColor)
-                            .attr("d", arc);
-
-                        var text = this.canvas.attr('title');
-                        text = text.replace("Last seen ", "");
-                        text = text.replace(" ago", "");
-
-                        this.svg.append("svg:g").append("text")
-                                .text(text)
-                                .attr("fill", "#4e4e4e")
-                                .style("font-size", "14px")
-                                .style("font-weight", "300")
-                                .attr("text-anchor", 'start')
-                                .attr("transform", "translate(" + (this.radius + 10) + "," + 7 + ")");
-                    },
-
-                    render: function(canvas, startColor, endColor, value, maxValue, radius, width){
-                        this.radius = radius;
-                        this.arcWidth = width;
-                        this.resetCanvas(canvas);
-                        this.draw(startColor, endColor, value, maxValue);
-                    }
-
-                    }).create();
-
-                $('td.time-since span').each(function(i,e){
-                    var el = $(e);
-                    var time = parseInt(el.attr('data-time'), 10);
-                    progressIndicator.render(e, 'ff0000', '00ff00', time, max, 20, 10);
-                });
-            </script>
         </div>
     </div>
 </div>
