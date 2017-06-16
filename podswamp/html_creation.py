@@ -5,16 +5,13 @@ import json
 import os
 import pickle
 import shutil
-from datetime import date
 
 from jinja2 import Environment, FileSystemLoader
-
 from podswamp.helpers.progress import Progress
 from podswamp.entities import *
 
-class HTMLGenerator:
-    version = date.today().strftime("%Y.%m.%d")
 
+class HTMLGenerator:
     html_folder_base = "./html/"
     basic_html_template = 'base.html'
     episode_template = 'episodes/episode.html'
@@ -26,17 +23,32 @@ class HTMLGenerator:
     progress = Progress()
 
     def __init__(self, config):
-        print("TEMPLATES", config.get_template_folder())
+        self.config = config
+
         self.env = Environment(loader=FileSystemLoader(config.get_template_folder()))
         self.resources_folder = config.get_resources_folder()
+        self.output_folder = self.html_folder_base
+        self.channel_data = {}
 
-        self.output_folder = os.path.join(self.html_folder_base, self.version)
+        with open(os.path.join(config.project_root, 'data/base.json'), 'r') as base_json:
+            data = json.load(base_json)
+            self.channel_data = data.get("channel", {})
 
-        with open('data/guests.json', 'rb') as quest_json:
-            self.guests = pickle.load(quest_json)
-        with open('data/enriched.json', 'rb') as enriched_data:
+        self.common_content = {
+            "title": self.channel_data.get("title", "Untitled Podcast")
+        }
+
+
+        with open(os.path.join(config.project_root, 'data/guests.json'), 'rb') as guest_json:
+            self.guests = pickle.load(guest_json)
+        with open(os.path.join(config.project_root, 'data/enriched.json'), 'rb') as enriched_data:
             self.episodes = pickle.load(enriched_data)
+
         self.generate_pages()
+
+    def clean_output_folder(self):
+        if os.path.exists(self.output_folder):
+            shutil.rmtree(self.output_folder)
 
     def render_template(self, template, data, outputfile):
         outputfileFull = os.path.join(self.output_folder, outputfile)
@@ -48,6 +60,11 @@ class HTMLGenerator:
         with open(outputfileFull, 'wb') as output:
             output.write(template.render(data).encode("utf8"))
 
+    def patch(self, update_content):
+        copy = self.common_content.copy()
+        copy.update(update_content)
+        return copy
+
     def generate_index_page(self):
         #Will consist of the top ten episodes
         #Latest episode
@@ -56,17 +73,17 @@ class HTMLGenerator:
         latest = sorted(self.episodes.values(), key=lambda e: e.position, reverse=True)[0]
         latest.latest = True
 
-        content = {
+        content = self.patch({
             'episode': latest,
             'classes': 'latest',
-        }
+        })
         self.render_template(self.homepage_template, content, 'index.html')
 
     def generate_show_pages(self):
         for i, deets in enumerate(self.episodes.items()):
             id, episode = deets
             self.progress.progress_bar(len(self.episodes), i, "Writing Episode Pages ")
-            self.render_template(self.episode_template, {'episode':episode},'episodes/%s.html' % id)
+            self.render_template(self.episode_template, self.patch({'episode': episode}), 'episodes/%s.html' % id)
 
     def generate_guest_pages(self):
         attendance = Attendance(self.episodes)
@@ -74,7 +91,7 @@ class HTMLGenerator:
             name, details = deets
             self.progress.progress_bar(len(self.guests), i, "Writing Guest Pages ")
             if not details.noGuest:
-                self.render_template(self.guest_template, {'guest': details, 'attendance':json.dumps(attendance.getAttendance(details))}, 'guests/%s.html' % details.id)
+                self.render_template(self.guest_template, self.patch({'guest': details, 'attendance':json.dumps(attendance.getAttendance(details))}), 'guests/%s.html' % details.id)
 
     def generate_guest_landing_page(self):
         self.progress.pprint("Writing Guest Landing Page")
@@ -82,9 +99,11 @@ class HTMLGenerator:
         for name, details in sorted(self.guests.items(), key=lambda x: x[1].appearances, reverse=True):
             if not details.noGuest:
                 guest_entries.append(details)
-        content = {
+
+        content = self.patch({
            'appearances': guest_entries,
-        }
+        })
+
         self.render_template(self.guests_template, content, 'guests_index.html')
 
     def generate_episode_landing_page(self):
@@ -102,16 +121,21 @@ class HTMLGenerator:
         shutil.copytree(self.resources_folder, html_resources)
 
     def generate_pages(self):
-        #self.generate_css()
+        self.clean_output_folder()
         self.generate_index_page()
         self.generate_show_pages()
-        self.generate_guest_pages()
         self.generate_episode_landing_page()
-        self.generate_guest_landing_page()
+
+        if self.config.guest_pages_enabled():
+            self.generate_guest_pages()
+            self.generate_guest_landing_page()
+
         self.clear_and_copy_resources()
 
 if __name__ == "__main__":
-    htmlGen = HTMLGenerator()
+    from podswamp.configuration import Config
+    install_location = os.path.dirname(__file__)
+    htmlGen = HTMLGenerator(Config(os.path.join(install_location, "../"), install_location))
 
 
 

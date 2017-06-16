@@ -5,15 +5,13 @@ from podswamp.html_creation import HTMLGenerator
 from podswamp.scraper import FeedParser
 from podswamp.parse_json_data import GuestProcessingAndKeywordExtraction
 
-def process_from_config(config):
-    #libsyn_feed = "http://stoppodcastingyourself.libsyn.com/rss"
-    #libsyn_feed = "http://thedeadauthorspodcast.libsyn.com/rss"
 
-    feedParser = FeedParser(config.rss)
-    feedParser.parseFeed(True)
+def process_from_config(config):
+    feed_parser = FeedParser(config.rss)
+    feed_parser.parse_feed(True)
 
     extractor = GuestProcessingAndKeywordExtraction()
     extractor.processEpisodes()
 
-    htmlGen = HTMLGenerator(config)
+    HTMLGenerator(config)
 

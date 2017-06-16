@@ -29,65 +29,75 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return ''.join(self.fed)
 
+
 def strip_tags(html):
     s = MLStripper(strip=True)
     s.feed(html)
     return s.get_data()
+
 
 def clean_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
 
+
 class FeedParser:
     def __init__(self, libsyn_feed):
         self.libsyn_feed = libsyn_feed
-        self.data = []
-        self.loaded_data = []
 
-    def parseFeed(self, update=False):
-        #parse the rss feed, if up date is set to True, we will only process new entries in the feed,
-        #otherwise we'll do it all
+        self.data = {
+            "channel": {},
+            "episodes": []
+        }
+
+        self.loaded_data = {
+            "channel": {},
+            "episodes": []
+        }
+
+    def parse_feed(self, update=False):
         if update:
-            existing_entries = self.getExistingEntries()
+            existing_entries = self.get_existing_entries()
         else:
             existing_entries = {}
 
         response = requests.get(self.libsyn_feed)
         xml_document = parseString(response.content)
 
-        self.handleEpisodesList(xml_document, existing_entries)
-        self.storeData()
+        self.handle_episodes_list(xml_document, existing_entries)
+        self.store_data()
 
-    def getExistingEntries(self):
+    def get_existing_entries(self):
         entry_ids = {}
         if os.path.exists("data/base.json"):
             with open("data/base.json", "r") as json_file:
                 self.loaded_data = json.load(json_file)
-                for entry in self.loaded_data:
+                for entry in self.loaded_data["episodes"]:
                     entry_ids[entry.get('episode_id')] = True
 
         return entry_ids
 
-
-    #join the text nodes from the xml element
-    def getElementText(self, elements):
+    def get_element_text(self, elements):
         return ''.join([x.data for x in elements[0].childNodes])
 
-    def generateHashedId(self, published_date, title):
+    def generate_hashed_id(self, published_date, title):
         string = "%s%s" % (published_date, title)
         return hashlib.sha224(string.encode("utf8")).hexdigest()
 
-    #Read the channel, and putt the items (episodes) from the dom
-    def handleEpisodesList(self, episodes, existing_entries={}):
+    def handle_episodes_list(self, episodes, existing_entries={}):
         channel = episodes.getElementsByTagName("channel")
+        channel_title = self.get_element_text(channel[0].getElementsByTagName("title"))
+        print("CHANNEL", channel_title)
+        self.data["channel"]["title"] = channel_title
+
         items = channel[0].getElementsByTagName("item")
         size = len(items)
 
         for i, item in enumerate(items):
-            title = self.getElementText(item.getElementsByTagName("title"))
-            published = self.getElementText(item.getElementsByTagName("pubDate"))
-            episode_id = self.generateHashedId(published, title)
+            title = self.get_element_text(item.getElementsByTagName("title"))
+            published = self.get_element_text(item.getElementsByTagName("pubDate"))
+            episode_id = self.generate_hashed_id(published, title)
 
             if not existing_entries.get(episode_id, False):
                 print("Saving new entry %s" % episode_id)
@@ -96,21 +106,22 @@ class FeedParser:
                     'episode_id': episode_id,
                     'title':  title,
                     'published': published,
-                    'link':  self.getElementText(item.getElementsByTagName("link")),
-                    'stripped_description': strip_tags(self.getElementText(item.getElementsByTagName("description"))),
-                    'description': clean_tags(self.getElementText(item.getElementsByTagName("description"))),
+                    'link':  self.get_element_text(item.getElementsByTagName("link")),
+                    'stripped_description': strip_tags(self.get_element_text(item.getElementsByTagName("description"))),
+                    'description': clean_tags(self.get_element_text(item.getElementsByTagName("description"))),
                     'media_url': item.getElementsByTagName("enclosure")[0].attributes["url"].value,
                     'media_length': item.getElementsByTagName("enclosure")[0].attributes["length"].value,
                     'media_type': item.getElementsByTagName("enclosure")[0].attributes["type"].value,
-                    'duration': self.getElementText(item.getElementsByTagName("itunes:duration")),
-                    'keywords': self.getElementText(item.getElementsByTagName("itunes:keywords")),
+                    'duration': self.get_element_text(item.getElementsByTagName("itunes:duration")),
+                    'keywords': self.get_element_text(item.getElementsByTagName("itunes:keywords")),
                 }
-                self.data.append(entry)
+                self.data["episodes"].append(entry)
             else:
                 print("Skipping stored entry %s" % episode_id)
 
-    def storeData(self):
-        self.loaded_data += self.data
+    def store_data(self):
+        self.loaded_data["channel"] = self.data["channel"]
+        self.loaded_data["episodes"] += self.data["episodes"]
         self.data = self.loaded_data
 
         if not os.path.exists("data/"):
@@ -121,4 +132,4 @@ class FeedParser:
 
 if __name__ == "__main__":
     scraper = FeedParser("http://thedeadauthorspodcast.libsyn.com/rss")
-    scraper.parseFeed(True)
+    scraper.parse_feed(True)
