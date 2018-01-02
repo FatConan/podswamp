@@ -16,7 +16,7 @@ class Config:
 
         self.rss = self.config.get("rss")
         self.guest_pages = self.config.get("guest_pages", {})
-        self.enable_guest_pages = self.guest_pages.get("enable_guest_pages", True)
+        self.enable_guest_pages = self.guest_pages.get("enable_guest_pages", False)
         self.guest_page_strippers = self.guest_pages.get("guest_page_strippers", [])
         self.guest_page_preloaded_entries = self.guest_pages.get("preloaded_entries", [])
         self.guest_page_episode_guest_re = re.compile(self.guest_pages.get("episode_guest_re", ".+[ 0-9]* - (.*)"), re.IGNORECASE)
