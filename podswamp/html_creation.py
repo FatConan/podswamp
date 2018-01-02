@@ -35,7 +35,8 @@ class HTMLGenerator:
 
         self.common_content = {
             "title": self.channel_data.get("title", "Untitled Podcast"),
-            "podswamp_intro": self.channel_data.get("podswamp_intro", "This is a podswamp generated site for a Libsyn provided podcast.")
+            "podswamp_intro": self.channel_data.get("podswamp_intro", "This is a podswamp generated site for a Libsyn provided podcast."),
+            "guest_pages_enabled": self.config.guest_pages_enabled()
         }
 
         with open(os.path.join(config.project_root, 'data/guests.json'), 'rb') as guest_json:

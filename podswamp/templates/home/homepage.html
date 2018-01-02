@@ -11,7 +11,9 @@
         <div class="episode-inner">
             <div class="info">
                 <a href="/episodes_index.html" class="episodes-list" title="View All Episodes">View Episodes List</a>
-                <a href="/guests_index.html" class="guests-list" title="View Guest Appearances">View Guest Appearances</a>
+                {%  if guest_pages_enabled %}
+                    <a href="/guests_index.html" class="guests-list" title="View Guest Appearances">View Guest Appearances</a>
+                {%  endif %}
             </div>
         </div>
     </div>
