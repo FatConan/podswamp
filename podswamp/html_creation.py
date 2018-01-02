@@ -71,20 +71,41 @@ class HTMLGenerator:
         #Latest episode
         #Link to the recaps
         self.progress.pprint("Writing Index Page")
-        latest = sorted(self.episodes.values(), key=lambda e: e.position, reverse=True)[0]
+        sorted_episodes = sorted(list(self.episodes.items()), key=lambda v: v[1].position, reverse=True)
+        id, latest = sorted_episodes[0]
         latest.latest = True
+        next_index = 1 % len(sorted_episodes)
+        prev_episode = sorted_episodes[-1]
+        next_episode = sorted_episodes[next_index]
 
         content = self.patch({
             'episode': latest,
             'classes': 'latest',
+            'next': next_episode[1],
+            'next_link': '/episodes/%s.html' % next_episode[0],
+            'prev': prev_episode[1],
+            'prev_link': '/episodes/%s.html' % prev_episode[0],
         })
         self.render_template(self.homepage_template, content, 'index.html')
 
     def generate_show_pages(self):
-        for i, deets in enumerate(self.episodes.items()):
+        sorted_episodes = sorted(list(self.episodes.items()), key=lambda v: v[1].position, reverse=False)
+        for i, deets in enumerate(sorted_episodes):
             id, episode = deets
+            prev_index = i-1
+            next_index = (i+1) % len(sorted_episodes)
+            prev_episode = sorted_episodes[prev_index]
+            next_episode = sorted_episodes[next_index]
+            context = self.patch({
+                'episode': episode,
+                'next': next_episode[1],
+                'next_link': '/episodes/%s.html' % next_episode[0],
+                'prev': prev_episode[1],
+                'prev_link': '/episodes/%s.html' % prev_episode[0],
+            })
+
             self.progress.progress_bar(len(self.episodes), i, "Writing Episode Pages ")
-            self.render_template(self.episode_template, self.patch({'episode': episode}), 'episodes/%s.html' % id)
+            self.render_template(self.episode_template, context, 'episodes/%s.html' % id)
 
     def generate_guest_pages(self):
         attendance = Attendance(self.episodes)

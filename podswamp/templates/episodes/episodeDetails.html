@@ -4,11 +4,11 @@
         <p class="published">{{ episode.published.strftime("%B %d, %Y") }}</p>
         <div class="info">
             <div class="guests">
-                {% if episode.getGuests() %}
-                Guest Starring:
-                {% for guest in episode.getGuests() %}
-                    <a href="/guests/{{ guest.id }}.html" class="guest" title="{{ guest.name }}">{{ guest.name }}</a>
-                {% endfor %}
+                {% if episode.getGuests() and guest_pages_enabled %}
+                    Guest Starring:
+                    {% for guest in episode.getGuests() %}
+                        <a href="/guests/{{ guest.id }}.html" class="guest" title="{{ guest.name }}">{{ guest.name }}</a>
+                    {% endfor %}
                 {% endif %}
             </div>
             <p class="description">{{ episode.description }}</p>
@@ -20,6 +20,10 @@
                 Download the audio at {{ episode.media_url }}
             </audio>
             <div class="libsyn"><a class="episode_link" href="{{ episode.link }}">View "{{ episode.title }}" on libsyn</a></div>
+            <div class="next-and-prev">
+                <a class="previous-episode" href="{{ prev_link }}">Previous Episode: {{ prev.title }}</a>
+                <a class="next-episode" href="{{ next_link }}">Next Episode: {{  next.title }}</a>
+            </div>
         </div>
     </div>
 </div>
