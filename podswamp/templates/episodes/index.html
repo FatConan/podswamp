@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Episodes{% endblock %}
+{% block podcast_header %}{{ title }}{% endblock %}
 {% block content %}
     <div class="episode">
         <div class="episode-inner">
             <p class="published">{{ podcast_title }} Episode List</p>
             <div class="info">
                 <table class="guests-and-episodes">
-                    <thead><tr><th>No.</th><th>Title</th><th>Released</th></tr></thead>
+                    <thead><tr><th class="number">No.</th><th class="title">Title</th><th class="released">Released</th></tr></thead>
                     <tbody>
                         {% for episode in episodes %}
-                            <tr><td>#{{ episode.position }}</td>
-                                <td><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">{{ episode.title }}</a></td>
-                                <td>{{ episode.published.strftime("%B %d, %Y") }}</td>
+                            <tr><td class="number">#{{ episode.position }}</td>
+                                <td class="title"><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">{{ episode.title }}</a></td>
+                                <td class="released">{{ episode.published.strftime("%B %d, %Y") }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -10,7 +10,7 @@ def process_from_config(config):
     feed_parser = FeedParser(config.rss)
     feed_parser.parse_feed(True)
 
-    extractor = GuestProcessingAndKeywordExtraction()
+    extractor = GuestProcessingAndKeywordExtraction(config)
     extractor.processEpisodes()
 
     HTMLGenerator(config)

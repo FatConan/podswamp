@@ -9,38 +9,23 @@ class GuestProcessingAndKeywordExtraction:
     #lis of special cases (should only be 1 entry at the moment) to handle it.
 
     episode_guest_re = re.compile(".+[ 0-9]* - (.*)", re.IGNORECASE)
-    old_episode_number_re = re.compile("(ep\.[ 0-9]*)", re.IGNORECASE)
-    #guest_name_strippers = ['LIVE from Very Very Fun Day in Chicago',' from JFL Northwest', 'LIVE, with ', 'LIVE with ',
-    #                        'LIVE from MaxFunCon 2014 with ', 'LIVE from MaxFunCon with',
-    #                        'LIVE from MaxFunCon East', 'LIVE from Toronto with',
-    #                        'LIVE from Victoria with ',
-    #                        'from the Northwest Podcast Fest', 'LIVE from the Canadian Comedy Awards',
-    #                        'LIVE from Edmonton with ', 'LIVE from Edmonton',
-    #                        'LIVE from Calgary', 'Switcheroo Week with ',
-    #
-    #                         ',', ' and ']
-    guest_name_strippers = []
+    guest_page_strippers = []
     guest_name_splitter = '|'
 
-    def __init__(self):
+    def __init__(self, config=None):
         self.guests = {}
         self.episodes = {}
+        self.preloads = []
+        self.guest_page_strippers = []
 
-        #self.addNewGuest('John Beuhler')
-        #self.addNewGuest("Graham's dad")
-        #self.addNewGuest("Ryan Belleville")
-        #self.addNewGuest('Pete Johansson',[('Pete and Courtney Johansson', False)])
-        #self.addNewGuest('Courtney Johansson',[('Pete and Courtney Johansson', False)])
-        #self.addNewGuest(None, [('EVERY SEGMENT!', False), ('', False), ('The Sunday Service', False), ('Pete', False)])
-        #self.addNewGuest('Abby Shumka', [('Abby Campbell', True)])
-        #self.addNewGuest('Cam MacLeod', [('Cam Macleod', False)])
-        #self.addNewGuest('Erica Sigurdson', [('Ricky Dawn Sigurdson', True)])
-        #self.addNewGuest('Taz VanRassel', [('6 members of The Sunday Service', False)])
-        #self.addNewGuest('Ryan Beil',[('6 members of The Sunday Service', False)])
-        #self.addNewGuest('Kevin Lee',[('6 members of The Sunday Service', False)])
-        #self.addNewGuest('Emmett Hall',[('6 members of The Sunday Service', False)])
-        #self.addNewGuest('Craig Anderson', [('6 members of The Sunday Service', False)])
-        #self.addNewGuest('Aaron Read',[('6 members of The Sunday Service', False)])
+        if config is not None:
+            self.episode_guest_re = config.guest_page_episode_guest_re
+            self.preloads = config.guest_page_preloaded_entries
+            self.guest_page_strippers = config.guest_page_strippers
+
+        for preload in self.preloads:
+            #Preload format is ("Alias name (or None)", [("Aliased from name", Should appear as AKA (True or False)),...]
+            self.addNewGuest(*preload)
 
         self.reversedAlias = {}
         for name, guest in self.guests.items():
@@ -90,12 +75,11 @@ class GuestProcessingAndKeywordExtraction:
         #Try and get the guest name (or names from the episode title)
         processedGuestList = [] #List of potential guest names
         try:
-            processed_title = self.old_episode_number_re.sub('', episode.title)
-            guest = self.episode_guest_re.findall(processed_title)[0]
+            guest = self.episode_guest_re.findall(episode.title)[0]
         except IndexError:
             guest = ''
         finally:
-            for replacement in self.guest_name_strippers:
+            for replacement in self.guest_page_strippers:
                 guest = guest.replace(replacement, '|')
             guestList = [name for name in guest.split(self.guest_name_splitter) if name != '']
             if not guestList:

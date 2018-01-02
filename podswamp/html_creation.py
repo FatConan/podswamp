@@ -10,7 +10,6 @@ from jinja2 import Environment, FileSystemLoader
 from podswamp.helpers.progress import Progress
 from podswamp.entities import *
 
-
 class HTMLGenerator:
     html_folder_base = "./html/"
     basic_html_template = 'base.html'
@@ -35,12 +34,13 @@ class HTMLGenerator:
             self.channel_data = data.get("channel", {})
 
         self.common_content = {
-            "title": self.channel_data.get("title", "Untitled Podcast")
+            "title": self.channel_data.get("title", "Untitled Podcast"),
+            "podswamp_intro": self.channel_data.get("podswamp_intro", "This is a podswamp generated site for a Libsyn provided podcast.")
         }
-
 
         with open(os.path.join(config.project_root, 'data/guests.json'), 'rb') as guest_json:
             self.guests = pickle.load(guest_json)
+
         with open(os.path.join(config.project_root, 'data/enriched.json'), 'rb') as enriched_data:
             self.episodes = pickle.load(enriched_data)
 
@@ -108,9 +108,9 @@ class HTMLGenerator:
 
     def generate_episode_landing_page(self):
         self.progress.pprint("Writing Episode Landing Page")
-        content = {
+        content = self.patch({
             'episodes': sorted([episode for episode in self.episodes.values()], key=lambda e: e.position, reverse=True)
-        }
+        })
         self.render_template(self.episodes_template, content, 'episodes_index.html')
 
     def clear_and_copy_resources(self):

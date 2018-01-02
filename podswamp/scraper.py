@@ -88,7 +88,6 @@ class FeedParser:
     def handle_episodes_list(self, episodes, existing_entries={}):
         channel = episodes.getElementsByTagName("channel")
         channel_title = self.get_element_text(channel[0].getElementsByTagName("title"))
-        print("CHANNEL", channel_title)
         self.data["channel"]["title"] = channel_title
 
         items = channel[0].getElementsByTagName("item")
@@ -100,7 +99,6 @@ class FeedParser:
             episode_id = self.generate_hashed_id(published, title)
 
             if not existing_entries.get(episode_id, False):
-                print("Saving new entry %s" % episode_id)
                 entry = {
                     'position': size - i,
                     'episode_id': episode_id,

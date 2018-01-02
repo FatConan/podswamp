@@ -20,11 +20,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='podswamp',
-
       # Versions should comply with PEP440.  For a discussion on single-sourcing
-      version='2017.06.13.1.alpha',
-
-
+      version='2017.6.13.1.1a0',
+      #data_files = ["templates/*", "resources/*"],
       description='Generates a simple listing site from a provided libsyn rss feed and configuration',
       long_description=long_description,
 
@@ -32,7 +30,7 @@ setup(name='podswamp',
       url='https://bitbucket.org/fatconan/podswamp/admin',
 
       # Author's details
-      author='Fat Conan',
+      author='FatConan',
       author_email='ian@headwillcollapse.net',
       include_package_data=True,
       license='MIT',
