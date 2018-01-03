@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ guest.name }}{% endblock %}
+{% block podcast_header %}{{ title }}{% endblock %}
+{% block content %}
+    {% include "guests/guestDetails.html" %}
+{% endblock %}

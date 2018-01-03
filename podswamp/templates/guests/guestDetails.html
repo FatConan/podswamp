@@ -1,0 +1,15 @@
+<div class="guest">
+    <h1>{{ guest.name }}</h1>
+    <div class="guest-inner">
+        {% if guest.displayAliases %}
+            <p class="published">a.k.a. {% for alias in guest.displayAliases %}{{ alias }} {% endfor %}</p>
+        {% endif %}
+        <div class="info">
+            <ul class="episodes">
+                {% for episode in guest.sortedEpisodes %}
+                     <li><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">(#{{ episode.position }}) {{ episode.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

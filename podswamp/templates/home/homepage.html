@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block podcast_header %}{{ title }}{% endblock %}
+{% block content %}
+    <h1>About This Site</h1>
+    <p>{{ podswamp_intro }}</p>
+    <br />
+
+    {% include "/episodes/episodeDetails.html" %}
+    <div class="episode">
+        <div class="episode-inner">
+            <div class="info">
+                <a href="/episodes_index.html" class="episodes-list" title="View All Episodes">View Episodes List</a>
+                {%  if guest_pages_enabled %}
+                    <a href="/guests_index.html" class="guests-list" title="View Guest Appearances">View Guest Appearances</a>
+                {%  endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

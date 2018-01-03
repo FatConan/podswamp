@@ -1,0 +1,116 @@
+@import url("reset.css");
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+html {
+    font-family: Roboto, sans-serif;
+    color: #7a7a7a;
+}
+body {
+    line-height: 1.5;
+}
+section.content {
+    padding: 30px;
+}
+
+h1 {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #000;
+    padding: 10px 0 10px;
+}
+
+p {
+    padding: 10px 0;
+    line-height: 1.4;
+}
+
+strong {
+    font-weight: bold;
+}
+
+audio {
+    margin: 10px 0 5px;
+    width: 80%;
+}
+
+p.published {
+    color: #7854B1;
+    font-size: 10pt;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px dashed #9b9b9b;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+a::after {
+    content: " » ";
+}
+a {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    color: #00B6A1;
+    text-decoration: none;
+    transition: color 0.5s, background 0.5s;
+}
+table {
+    width: 100%;
+}
+
+th {
+    text-align: left;
+    color: #7854B1;
+    padding: 5px;
+    border: 1px solid #efefef;
+}
+
+td {
+    text-align: left;
+    vertical-align: top;
+    padding: 5px;
+    border: 1px solid #efefef;
+}
+td.name,
+td.appearances,
+td.title {
+    padding: 0;
+}
+td.name a,
+td.appearances a,
+td.title a{
+    margin: 0;
+}
+
+td.time-since span {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+}
+
+td.name a {
+    white-space: nowrap;
+}
+
+a:hover {
+    background-color: #00B6A1;
+    color: #fff;
+}
+
+header {
+    margin: 0;
+}
+header a {
+    margin: 0;
+    padding: 10px 30px;
+    display: block;
+    border-bottom: 2px solid #9b9b9b;
+}
+
+ul.episodes {
+    padding: 0;
+    margin: 0;
+}
+ul.episodes li{
+    display: block;
+}

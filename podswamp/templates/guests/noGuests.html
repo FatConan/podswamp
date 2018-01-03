@@ -1,0 +1,10 @@
+<div class="episode">
+    <div class="episode-inner">
+        <p class="published">No Guest This Week</p>
+        <div class="info">
+            {% for episode in noguests %}
+                <a href="/episodes/{{ episode.episode_id }}.html" title="{{ episode.title }}">#{{ episode.position }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

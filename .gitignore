@@ -1,0 +1,7 @@
+*.pyc
+.idea
+data
+html
+build
+podswamp.egg-info
+dist

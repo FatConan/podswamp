@@ -1,0 +1,24 @@
+<div class="episode">
+    <div class="episode-inner">
+        <p class="published">{{ podcast_title }} With Guest Appearances From: </p>
+        <div class="info">
+            <table class="guests-and-episodes">
+                <thead><tr><th class="name">Name</th><th class="appearances">Episodes</th></tr></thead>
+                <tbody>
+                    {% for appearance in appearances %}
+                        <tr class="{{ loop.cycle('odd', 'even') }}">
+                            <td class="name">
+                                <a href="/guests/{{appearance.id}}.html" class="guest" title="{{ appearance.name }}  ({{ appearance.appearances }} appearances)">{{ appearance.name }} ({{ appearance.appearances }})</a>
+                            </td>
+                            <td class="appearances">
+                                {% for episode in appearance.sortedEpisodes %}
+                                    <a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">#{{ episode.position }}</a>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
