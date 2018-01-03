@@ -9,19 +9,15 @@ class GuestProcessingAndKeywordExtraction:
     #lis of special cases (should only be 1 entry at the moment) to handle it.
 
     episode_guest_re = re.compile(".+[ 0-9]* - (.*)", re.IGNORECASE)
-    guest_page_strippers = []
     guest_name_splitter = '|'
 
-    def __init__(self, config=None):
+    def __init__(self, config):
+        self.config = config
         self.guests = {}
         self.episodes = {}
-        self.preloads = []
-        self.guest_page_strippers = []
-
-        if config is not None:
-            self.episode_guest_re = config.guest_page_episode_guest_re
-            self.preloads = config.guest_page_preloaded_entries
-            self.guest_page_strippers = config.guest_page_strippers
+        self.episode_guest_re = config.guest_page_episode_guest_re
+        self.preloads = config.guest_page_preloaded_entries
+        self.guest_page_strippers = config.guest_page_strippers
 
         for preload in self.preloads:
             #Preload format is ("Alias name (or None)", [("Aliased from name", Should appear as AKA (True or False)),...]
@@ -47,7 +43,7 @@ class GuestProcessingAndKeywordExtraction:
         self.episodes[episodeData.get('episode_id')] = Episode(episodeData)
 
     def processEpisodes(self):
-        with open("data/base.json", "r") as json_file:
+        with open(self.config.get_project_relative("data/base.json"), "r") as json_file:
             data = json.load(json_file)
             for episodeData in data.get("episodes", []):
                 self.addNewEpisode(episodeData)
@@ -100,17 +96,9 @@ class GuestProcessingAndKeywordExtraction:
             episode.addGuest(guest)
 
     def storeData(self):
-        with open("data/guests.json", "wb") as guests_json:
+        with open(self.config.get_project_relative("data/guests.json"), "wb") as guests_json:
             pickle.dump(self.guests, guests_json)
 
-        with open("data/enriched.json", "wb") as enriched_episodes:
+        with open(self.config.get_project_relative("data/enriched.json"), "wb") as enriched_episodes:
             pickle.dump(self.episodes, enriched_episodes)
-
-
-
-#DescriptionAnalyser(extractor.episodes)
-if __name__ == "__main__":
-    extractor = GuestProcessingAndKeywordExtraction()
-    extractor.processEpisodes()
-
 

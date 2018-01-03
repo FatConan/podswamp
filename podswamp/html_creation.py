@@ -26,7 +26,7 @@ class HTMLGenerator:
 
         self.env = Environment(loader=FileSystemLoader(config.get_template_folder()))
         self.resources_folder = config.get_resources_folder()
-        self.output_folder = self.html_folder_base
+        self.output_folder = config.get_project_relative(self.html_folder_base)
         self.channel_data = {}
 
         with open(os.path.join(config.project_root, 'data/base.json'), 'r') as base_json:
@@ -39,10 +39,10 @@ class HTMLGenerator:
             "guest_pages_enabled": self.config.guest_pages_enabled()
         }
 
-        with open(os.path.join(config.project_root, 'data/guests.json'), 'rb') as guest_json:
+        with open(config.get_project_relative('data/guests.json'), 'rb') as guest_json:
             self.guests = pickle.load(guest_json)
 
-        with open(os.path.join(config.project_root, 'data/enriched.json'), 'rb') as enriched_data:
+        with open(config.get_project_relative('data/enriched.json'), 'rb') as enriched_data:
             self.episodes = pickle.load(enriched_data)
 
         self.generate_pages()
@@ -75,8 +75,8 @@ class HTMLGenerator:
         id, latest = sorted_episodes[0]
         latest.latest = True
         next_index = 1 % len(sorted_episodes)
-        prev_episode = sorted_episodes[-1]
-        next_episode = sorted_episodes[next_index]
+        next_episode = sorted_episodes[-1]
+        prev_episode = sorted_episodes[next_index]
 
         content = self.patch({
             'episode': latest,

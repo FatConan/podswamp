@@ -43,8 +43,9 @@ def clean_tags(html):
 
 
 class FeedParser:
-    def __init__(self, libsyn_feed):
-        self.libsyn_feed = libsyn_feed
+    def __init__(self, config):
+        self.libsyn_feed = config.rss
+        self.config = config
 
         self.data = {
             "channel": {},
@@ -70,8 +71,8 @@ class FeedParser:
 
     def get_existing_entries(self):
         entry_ids = {}
-        if os.path.exists("data/base.json"):
-            with open("data/base.json", "r") as json_file:
+        if os.path.exists(self.config.get_project_relative("data/base.json")):
+            with open(self.config.get_project_relative("data/base.json"), "r") as json_file:
                 self.loaded_data = json.load(json_file)
                 for entry in self.loaded_data["episodes"]:
                     entry_ids[entry.get('episode_id')] = True
@@ -122,12 +123,8 @@ class FeedParser:
         self.loaded_data["episodes"] += self.data["episodes"]
         self.data = self.loaded_data
 
-        if not os.path.exists("data/"):
-            os.mkdir("data/")
+        if not os.path.exists(self.config.get_project_relative("data/")):
+            os.mkdir(self.config.get_project_relative("data/"))
 
-        with open("data/base.json", "w") as json_file:
+        with open(self.config.get_project_relative("data/base.json"), "w") as json_file:
             json.dump(self.loaded_data, json_file)
-
-if __name__ == "__main__":
-    scraper = FeedParser("http://thedeadauthorspodcast.libsyn.com/rss")
-    scraper.parse_feed(True)
