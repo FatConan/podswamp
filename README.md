@@ -35,11 +35,8 @@ podswamp .
 To process the configuration and builds the HTML of the site in a folder called, fittingly enough, html.
 
 ##Examples
-Examples of Podswamp's configuration can be found for:
-* [Stop Podcasting Yourself](https://bitbucket.org/fatconan/spy-db)
-* [Dead Author's Podcast](https://bitbucket.org/fatconan/deadauthors-db)
+The [podswamp-examples](https://bitbucket.org/fatconan/podswamp-examples) project contains a number of podswamp setups for a few popular podcasts.  It wil act as a guide on how to setup sites, demonstrating the title parsing mechanisms for extracting the guest information as well as using bespoke styling and templates.
 
-Examples of the output of Podswamp can be found at:
-* [Stop Podcasting Yourself](http://spydb.themonstrouscavalca.de/) 
+They will act as a reference while we add better documentation for Podswamp as a whole.
  
 
