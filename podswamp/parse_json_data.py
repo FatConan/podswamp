@@ -56,7 +56,6 @@ class GuestProcessingAndKeywordExtraction:
         self.storeData()
 
     def postProcessGuestsFromEpisodeDescription(self, episode):
-        episodeGuests = episode.guests
         for name, guest in self.guests.items():
             if guest and guest.name.lower() in episode.description.lower():
                 episode.addGuest(guest)
@@ -90,8 +89,6 @@ class GuestProcessingAndKeywordExtraction:
                             processedGuestList.append(match)
                     else:
                         processedGuestList.append(self.addNewGuest(guest))
-
-        print("%s @ %s" % (episode.title, ' | '.join([g.name for g in processedGuestList])))
         for guest in processedGuestList:
             episode.addGuest(guest)
 

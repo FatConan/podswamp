@@ -115,9 +115,7 @@ class FeedParser:
                     'keywords': self.get_element_text(item.getElementsByTagName("itunes:keywords")),
                 }
                 self.data["episodes"].append(entry)
-            else:
-                print("Skipping stored entry %s" % episode_id)
-
+           
     def store_data(self):
         self.loaded_data["channel"] = self.data["channel"]
         self.loaded_data["episodes"] += self.data["episodes"]
