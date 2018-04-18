@@ -80,7 +80,10 @@ class FeedParser:
         return entry_ids
 
     def get_element_text(self, elements):
-        return ''.join([x.data for x in elements[0].childNodes])
+        try:
+            return ''.join([x.data for x in elements[0].childNodes])
+        except IndexError:
+            return ''
 
     def generate_hashed_id(self, published_date, title):
         string = "%s%s" % (published_date, title)
