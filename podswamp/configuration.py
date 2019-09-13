@@ -2,7 +2,6 @@ import os
 import json
 import re
 
-
 class Config:
     def __init__(self, project_root, podswamp_location):
         self.project_root = project_root
