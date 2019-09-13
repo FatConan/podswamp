@@ -20,7 +20,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='podswamp',
-      version='2018.1.3.1.1a0',
+      version='2019.9.13.1',
       description='Generates a simple listing site from a provided libsyn rss feed and configuration',
       long_description=long_description,
 
