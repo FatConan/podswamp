@@ -1,7 +1,7 @@
 """Setup script for Podswamp
 
 See:
-https://bitbucket.org/fatconan/podswamp
+https://github.com/FatConan/podswamp
 """
 
 # To use a consistent encoding
@@ -25,7 +25,7 @@ setup(name='podswamp',
       long_description=long_description,
 
       # The project's main homepage
-      url='https://bitbucket.org/fatconan/podswamp',
+      url='https://github.com/FatConan/podswamp',
 
       # Author's details
       author='FatConan',
