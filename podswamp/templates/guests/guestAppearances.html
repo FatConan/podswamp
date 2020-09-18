@@ -12,7 +12,7 @@
                             </td>
                             <td class="appearances">
                                 {% for episode in appearance.sortedEpisodes %}
-                                    <a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">#{{ episode.position }}</a>
+                                    <a href="/episodes/{{ episode.slug }}.html" class="ep" title="{{ episode.title }}">#{{ episode.position }}</a>
                                 {% endfor %}
                             </td>
                         </tr>

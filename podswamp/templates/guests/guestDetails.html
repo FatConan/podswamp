@@ -7,7 +7,7 @@
         <div class="info">
             <ul class="episodes">
                 {% for episode in guest.sortedEpisodes %}
-                     <li><a href="/episodes/{{ episode.episode_id }}.html" class="ep" title="{{ episode.title }}">(#{{ episode.position }}) {{ episode.title }}</a></li>
+                     <li><a href="/episodes/{{ episode.slug }}.html" class="ep" title="{{ episode.title }}">(#{{ episode.position }}) {{ episode.title }}</a></li>
                 {% endfor %}
             </ul>
         </div>

@@ -13,6 +13,7 @@ class GuestProcessingAndKeywordExtraction:
 
     def __init__(self, config):
         self.config = config
+        self.slugs = set()
         self.guests = {}
         self.episodes = {}
         self.episode_guest_re = config.guest_page_episode_guest_re
@@ -39,7 +40,22 @@ class GuestProcessingAndKeywordExtraction:
             self.guests[name] = Guest(name, aliases)
         return self.guests.get(name)
 
+    def urlify(self, slug):
+        slug = slug.lower()
+        slug = re.sub(r"[^\w\s]", '', slug)
+        slug = re.sub(r'\s+', '-', slug)
+        return slug
+
     def addNewEpisode(self, episodeData):
+        slug = self.urlify(episodeData.get("title", ""))
+        if not slug:
+            slug = episodeData.get("episode_id")
+
+        while slug in self.slugs:
+            slug += "-"
+
+        self.slugs.add(slug)
+        episodeData["slug"] = slug
         self.episodes[episodeData.get('episode_id')] = Episode(episodeData)
 
     def processEpisodes(self):

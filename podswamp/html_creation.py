@@ -5,6 +5,7 @@ import json
 import os
 import pickle
 import shutil
+import re
 
 from jinja2 import Environment, FileSystemLoader
 from podswamp.helpers.progress import Progress
@@ -23,6 +24,7 @@ class HTMLGenerator:
 
     def __init__(self, config):
         self.config = config
+        self.slugs = set()
 
         self.env = Environment(loader=FileSystemLoader(config.get_template_folder()))
         self.resources_folder = config.get_resources_folder()
@@ -82,9 +84,9 @@ class HTMLGenerator:
             'episode': latest,
             'classes': 'latest',
             'next': next_episode[1],
-            'next_link': '/episodes/%s.html' % next_episode[0],
+            'next_link': '/episodes/%s.html' % next_episode[1].slug,
             'prev': prev_episode[1],
-            'prev_link': '/episodes/%s.html' % prev_episode[0],
+            'prev_link': '/episodes/%s.html' % prev_episode[1].slug,
         })
         self.render_template(self.homepage_template, content, 'index.html')
 
@@ -96,16 +98,17 @@ class HTMLGenerator:
             next_index = (i+1) % len(sorted_episodes)
             prev_episode = sorted_episodes[prev_index]
             next_episode = sorted_episodes[next_index]
+
             context = self.patch({
                 'episode': episode,
                 'next': next_episode[1],
-                'next_link': '/episodes/%s.html' % next_episode[0],
+                'next_link': '/episodes/%s.html' % next_episode[1].slug,
                 'prev': prev_episode[1],
-                'prev_link': '/episodes/%s.html' % prev_episode[0],
+                'prev_link': '/episodes/%s.html' % prev_episode[1].slug,
             })
 
             self.progress.progress_bar(len(self.episodes), i, "Writing Episode Pages ")
-            self.render_template(self.episode_template, context, 'episodes/%s.html' % id)
+            self.render_template(self.episode_template, context, 'episodes/%s.html' % episode.slug)
 
     def generate_guest_pages(self):
         attendance = Attendance(self.episodes)
@@ -113,7 +116,7 @@ class HTMLGenerator:
             name, details = deets
             self.progress.progress_bar(len(self.guests), i, "Writing Guest Pages ")
             if not details.noGuest:
-                self.render_template(self.guest_template, self.patch({'guest': details, 'attendance':json.dumps(attendance.getAttendance(details))}), 'guests/%s.html' % details.id)
+                self.render_template(self.guest_template, self.patch({'guest': details, 'attendance': json.dumps(attendance.getAttendance(details))}), 'guests/%s.html' % details.id)
 
     def generate_guest_landing_page(self):
         self.progress.pprint("Writing Guest Landing Page")

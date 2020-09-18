@@ -8,6 +8,7 @@ class Episode:
         self.published = parser.parse(episodeData.get('published', ''))
         self.link = episodeData.get('link', '')
         self.description = episodeData.get('description', '')
+        self.slug = episodeData.get('slug', '')
 
         self.media_url = episodeData.get('media_url', '')
         self.media_type = episodeData.get('media_type', '')
