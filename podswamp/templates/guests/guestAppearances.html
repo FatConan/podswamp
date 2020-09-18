@@ -8,7 +8,7 @@
                     {% for appearance in appearances %}
                         <tr class="{{ loop.cycle('odd', 'even') }}">
                             <td class="name">
-                                <a href="/guests/{{appearance.id}}.html" class="guest" title="{{ appearance.name }}  ({{ appearance.appearances }} appearances)">{{ appearance.name }} ({{ appearance.appearances }})</a>
+                                <a href="/guests/{{appearance.slug}}.html" class="guest" title="{{ appearance.name }}  ({{ appearance.appearances }} appearances)">{{ appearance.name }} ({{ appearance.appearances }})</a>
                             </td>
                             <td class="appearances">
                                 {% for episode in appearance.sortedEpisodes %}

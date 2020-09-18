@@ -16,12 +16,14 @@ class UTC(tzinfo):
 utc = UTC()
 
 class Guest:
-    def __init__(self, name, aliases=None):
+    def __init__(self, name, slug, aliases=None):
         if name is None:
             self.name = '[No Guest]'
+            self.slug = slug
             self.noGuest = True
         else:
             self.name = name
+            self.slug = slug
             self.noGuest = False
 
         self.episodes = []

@@ -116,7 +116,7 @@ class HTMLGenerator:
             name, details = deets
             self.progress.progress_bar(len(self.guests), i, "Writing Guest Pages ")
             if not details.noGuest:
-                self.render_template(self.guest_template, self.patch({'guest': details, 'attendance': json.dumps(attendance.getAttendance(details))}), 'guests/%s.html' % details.id)
+                self.render_template(self.guest_template, self.patch({'guest': details, 'attendance': json.dumps(attendance.getAttendance(details))}), 'guests/%s.html' % details.slug)
 
     def generate_guest_landing_page(self):
         self.progress.pprint("Writing Guest Landing Page")

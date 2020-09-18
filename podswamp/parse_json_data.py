@@ -14,6 +14,7 @@ class GuestProcessingAndKeywordExtraction:
     def __init__(self, config):
         self.config = config
         self.slugs = set()
+        self.guest_slugs = set()
         self.guests = {}
         self.episodes = {}
         self.episode_guest_re = config.guest_page_episode_guest_re
@@ -33,11 +34,20 @@ class GuestProcessingAndKeywordExtraction:
                     self.reversedAlias[alias] = [guest]
 
     def addNewGuest(self, name, aliases=None):
+        slug = 'no-guest'
         if name == '':
             name = None
 
         if not self.guests.get(name):
-            self.guests[name] = Guest(name, aliases)
+            if name:
+                slug = self.urlify(name)
+
+            while slug in self.guest_slugs:
+                slug += "-"
+
+            self.guest_slugs.add(slug)
+
+            self.guests[name] = Guest(name, slug, aliases)
         return self.guests.get(name)
 
     def urlify(self, slug):
