@@ -30,6 +30,7 @@ strong {
 audio {
     margin: 10px 0 5px;
     width: 80%;
+    max-width: 600px;
 }
 
 p.published {
@@ -113,4 +114,7 @@ ul.episodes {
 }
 ul.episodes li{
     display: block;
+}
+.modal{
+    display: none;
 }

@@ -13,17 +13,6 @@
             </div>
             <p class="description">{{ episode.description }}</p>
         </div>
-        <div class="audio">
-            <audio controls>
-                <source src="{{ episode.media_url }}" type="{{ episode.media_type }}">
-                Your browser does not support the audio element.
-                Download the audio at {{ episode.media_url }}
-            </audio>
-            <div class="libsyn"><a class="episode_link" href="{{ episode.link }}">View "{{ episode.title }}" on libsyn</a></div>
-            <div class="next-and-prev">
-                <a class="previous-episode" href="{{ prev_link }}">Previous Episode: {{ prev.title }}</a>
-                <a class="next-episode" href="{{ next_link }}">Next Episode: {{  next.title }}</a>
-            </div>
-        </div>
+        {%  include "/audio/audio.html" %}
     </div>
 </div>
