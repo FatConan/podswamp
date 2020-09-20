@@ -8,39 +8,53 @@ class PlaybackControl{
             autoOpen: false,
             width: "80%",
             modal: true,
+            create: function(event, ui){
+                // Set maxWidth
+                $(this).parent().css("maxWidth", "500px");
+            },
             buttons: {
                 Yes: function(){
                     this.playbackElement.play();
-                    this.playbackElement.dialog("close");
+                    this.playbackModal.dialog("close");
                 }.bind(this),
                 No: function(){
                     this.playbackElement.currentTime = 0;
-                    this.playbackElement.dialog("close");
+                    this.playbackModal.dialog("close");
                 }.bind(this)
             }
         });
 
         let data = this.readFromUrl();
+        let vts = null;
         if(data.vts){
-            let vts = parseInt(data.vts, 10);
+            vts = parseInt(data.vts, 10);
             if(vts){
                 this.playbackElement.currentTime = vts;
             }
         }
-        if(data.vte){
+        if(data.vte && vts !== null){
             let vte = parseInt(data.vte, 10);
-            let interval = setInterval(function(){
-                if(this.playbackElement.currentTime >= vte){
-                    this.playbackElement.pause();
-                    clearInterval(interval);
-                }
-            }.bind(this), 1000);
+            if(vte > vts){
+                let clipLength = vte - vts;
+                let interval = setInterval(function(){
+                    if(this.playbackElement.currentTime >= vte || this.playbackElement.ended){
+                        this.playbackElement.pause();
+                        clearInterval(interval);
+                    }
+                }.bind(this), 1000);
 
-            if(data.title){
-                this.dialog.dialog("options", "title", "Playing a clip!");
-                this.dialog.dialog("open");
-            }else{
-                this.dialog.dialog("open");
+                if(data.title){
+                    this.dialog.dialog("option", "title", "About to play a clip!");
+                    this.playbackModal.empty().append(`<p>You are about to listen to a ${clipLength} 
+                        second clip entitled: <br/> <strong>"${data.title}"</strong></p>
+                        <p>Would you like to play it?</p>`);
+                    this.dialog.dialog("open");
+                }else{
+                    this.dialog.dialog("option", "title", "About to play a clip!");
+                        this.playbackModal.empty().append(`<p>You are about to listen to a ${clipLength} second clip.</p>
+                        <p> Would you like to play it?</p> `);
+                    this.dialog.dialog("open");
+                }
             }
         }
     }
